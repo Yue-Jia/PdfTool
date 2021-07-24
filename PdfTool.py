@@ -1,7 +1,7 @@
 from PyPDF2 import PdfFileMerger, PdfFileReader
 import sys
 import asyncio
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QProgressBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QProgressBar, QFileDialog
 from PyQt5.QtCore import Qt, QUrl
 
 class ListBoxWidget(QListWidget):
@@ -39,13 +39,14 @@ class ListBoxWidget(QListWidget):
 class PdfTool(QMainWindow):
 	def __init__(self):
 		super().__init__()
+		directory ='mergedFile.pdf'
 		self.resize(1200,600)
 		self.lstView = ListBoxWidget(self)
 	#	print(dir(self.lstView))
 		self.btn = QPushButton('Merge' ,self)
 		self.btn.setGeometry(800,400,200,50)
        # 	self.btn.clicked.connect(lambda :print(self.getSelectedItem()))
-		self.btn.clicked.connect(lambda : PT().pdfMerge(self.getItems()))
+		self.btn.clicked.connect(lambda : PT().pdfMerge(self.getItems(),self.msg()))
 		self.btn1 = QPushButton('Delete' ,self)
 		self.btn1.setGeometry(800,460,200,50)
 		self.btn1.clicked.connect(lambda :self.removeItem())
@@ -66,6 +67,9 @@ class PdfTool(QMainWindow):
                           	border-radius :15px;
                           	}''')
 		self.setStyleSheet('background-color: lightgray')
+		self.notif = QLabel('',self)
+		self.notif.setGeometry(800,490,200,20)
+
 	def getSelectedItem(self):
         	item = QListWidgetItem(self.lstView.currentItem())
         	return item.text()
@@ -79,14 +83,19 @@ class PdfTool(QMainWindow):
 			self.lstView.takeItem(self.getItems().index(self.getSelectedItem()))
 		except Exception as e:
 			print(e)
-
+	def msg(self):
+		try:
+			directory = QFileDialog.getSaveFileName(self, "Set Path","./","PDF Files (*.pdf)")
+			return directory[0]
+		except Exception as e:
+			print(e)
 
 class PT():
 	if not sys.warnoptions:
         	import warnings
         	warnings.simplefilter("ignore")
 
-	def pdfMerge(self,lst):
+	def pdfMerge(self,lst,directory):
 		try:
 			# Call the PdfFileMerger
 			mergedObject = PdfFileMerger()
@@ -96,7 +105,7 @@ class PT():
 				mergedObject.append(PdfFileReader(fileName, 'rb'))
 	     
 		# 	Write all the files into a file which is named as shown below
-			mergedObject.write("mergedfilesoutput.pdf")
+			mergedObject.write(directory)
 			print("Done.")
 		except Exception as e:
 			print(e)
