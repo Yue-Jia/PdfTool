@@ -7,34 +7,39 @@ from PyQt5.QtCore import Qt, QUrl
 
 class ListBoxWidget(QListWidget):
 	def __init__(self,parent=None):
-        	super().__init__(parent)
-        	self.setAcceptDrops(True)
-        	self.resize(600,600)
+		super().__init__(parent)
+		self.setAcceptDrops(True)
+		self.resize(600,600)
+		self.setStyleSheet(
+			'''
+			background-color:#637383;
+			
+			''')
 	def dragEnterEvent(self, event):
-        	if event.mimeData().hasUrls:
-            		event.accept()
-        	else:
-            		event.ignore()
+		if event.mimeData().hasUrls:
+			event.accept()
+		else:
+			event.ignore()
 	def dragMoveEvent(self, event):
-        	if event.mimeData().hasUrls():
-            		event.setDropAction(Qt.CopyAction)
-            		event.accept()
-        	else:
-            		event.ignore()
+		if event.mimeData().hasUrls():
+			event.setDropAction(Qt.CopyAction)
+			event.accept()
+		else:
+			event.ignore()
 	def dropEvent(self, event):
-        	if event.mimeData().hasUrls():
-            		event.setDropAction(Qt.CopyAction)
-            		event.accept()
+		if event.mimeData().hasUrls() and event.mimeData().urls()[-1].toString().endswith('.pdf'):
+			event.setDropAction(Qt.CopyAction)
+			event.accept()
 
-            		links= []
-            		for url in event.mimeData().urls():
-                		if url.isLocalFile():
-                    			links.append(str(url.toLocalFile()))
-                		else:
-                    			links.append(str(url.toString()))
-            		self.addItems(links)
-        	else:
-            		event.ignore()
+			links= []
+			for url in event.mimeData().urls():
+				if url.isLocalFile():
+					links.append(str(url.toLocalFile()))
+				else:
+					links.append(str(url.toString()))
+			self.addItems(links)
+		else:
+			event.ignore()
 
 
 class PdfTool(QMainWindow):
@@ -47,7 +52,7 @@ class PdfTool(QMainWindow):
 		self.lstView.setGeometry(300,0,600,600)
 		self.btn = QPushButton('Merge' ,self)
 		self.btn.setGeometry(50,400,200,50)
-		self.btn.clicked.connect(lambda : PT().pdfMerge(self.getItems(),self.msg()))
+		self.btn.clicked.connect(lambda : self.pdfMerge(self.getItems(),self.msg()))
 		self.btn1 = QPushButton('Delete' ,self)
 		self.btn1.setGeometry(50,460,200,50)
 		self.btn1.clicked.connect(lambda :self.removeItem())
@@ -75,7 +80,7 @@ class PdfTool(QMainWindow):
 				};
 				font:23px;
 				color: #00FA9A;
-				background-color: #2F4F4F;
+				background-color: #778899;
 				''')
 		self.setWindowIcon(QtGui.QIcon('PT.png'))
 		self.notif = QLabel('Please Drag and Drop',self)
@@ -100,13 +105,11 @@ class PdfTool(QMainWindow):
 			return directory[0]
 		except Exception as e:
 			print(e)
-
-class PT():
-	if not sys.warnoptions:
-        	import warnings
-        	warnings.simplefilter("ignore")
-
+	
 	def pdfMerge(self,lst,directory):
+		if not sys.warnoptions:
+			import warnings
+			warnings.simplefilter("ignore")
 		try:
 			# Call the PdfFileMerger
 			mergedObject = PdfFileMerger()
@@ -120,6 +123,7 @@ class PT():
 			print("Done.")
 		except Exception as e:
 			print(e)
+
 
 if __name__ =="__main__":
     
