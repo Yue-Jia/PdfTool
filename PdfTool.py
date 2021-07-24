@@ -1,7 +1,8 @@
 from PyPDF2 import PdfFileMerger, PdfFileReader
 import sys
 import asyncio
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QProgressBar, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QProgressBar, QFileDialog, QLabel
+from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QUrl
 
 class ListBoxWidget(QListWidget):
@@ -40,22 +41,21 @@ class PdfTool(QMainWindow):
 	def __init__(self):
 		super().__init__()
 		directory ='mergedFile.pdf'
-		self.resize(1200,600)
+		#self.resize(900,600)
+		self.setFixedSize(900,600)
 		self.lstView = ListBoxWidget(self)
-	#	print(dir(self.lstView))
+		self.lstView.setGeometry(300,0,600,600)
 		self.btn = QPushButton('Merge' ,self)
-		self.btn.setGeometry(800,400,200,50)
-       # 	self.btn.clicked.connect(lambda :print(self.getSelectedItem()))
+		self.btn.setGeometry(50,400,200,50)
 		self.btn.clicked.connect(lambda : PT().pdfMerge(self.getItems(),self.msg()))
 		self.btn1 = QPushButton('Delete' ,self)
-		self.btn1.setGeometry(800,460,200,50)
+		self.btn1.setGeometry(50,460,200,50)
 		self.btn1.clicked.connect(lambda :self.removeItem())
-		
 		self.setWindowTitle('PdfTool')
 		self.pbar = QProgressBar(self,minimum=0,maximum=0, textVisible=False,objectName='BlueProgressBar')
 		self.pbar.setRange(0,100)
 		self.pbar.setValue(100)
-		self.pbar.setGeometry(800,350,200,15)
+		self.pbar.setGeometry(50,350,200,15)
 		self.pbar.setStyleSheet('''
 			#BlueProgressBar  {
                         	border: solid grey;
@@ -63,12 +63,23 @@ class PdfTool(QMainWindow):
                           	color: black;
                         }
 			#BlueProgressBar::chunk {
-				background-color: #05B8CC;
+				background-color: #00FA9A;
                           	border-radius :15px;
                           	}''')
-		self.setStyleSheet('background-color: lightgray')
-		self.notif = QLabel('',self)
-		self.notif.setGeometry(800,490,200,20)
+		self.setStyleSheet('''
+				QPushButton {
+				    padding: 5px;
+				    border-color: #00FA9A;
+				    border-style: outset;
+				    border-width: 2px;
+				};
+				font:23px;
+				color: #00FA9A;
+				background-color: #2F4F4F;
+				''')
+		self.setWindowIcon(QtGui.QIcon('PT.png'))
+		self.notif = QLabel('Please Drag and Drop',self)
+		self.notif.setGeometry(50,250,200,20)
 
 	def getSelectedItem(self):
         	item = QListWidgetItem(self.lstView.currentItem())
@@ -112,11 +123,6 @@ class PT():
 
 if __name__ =="__main__":
     
-#    try:
-#       last = sys.argv[1]
-#        pdfMerge(int(last))
-#    except Exception as e:
-#        print(e)
 	app = QApplication(sys.argv)
 	tool = PdfTool()
 	tool.show()
