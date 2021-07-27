@@ -14,9 +14,8 @@ class ListBoxWidget(QListWidget):
 		self.resize(600,600)
 		self.setStyleSheet(
 			'''
-			border-color: #00008B;
-			border-style: outset;
-			border-width: 2px;
+			background-color:#F0FFFF;
+			
 			''')
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls:
