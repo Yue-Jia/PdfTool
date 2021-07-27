@@ -65,7 +65,7 @@ class PdfTool(QMainWindow):
 		self.btn1.clicked.connect(lambda :self.removeItem())
 		self.btn2 = QPushButton('Split',self)
 		self.btn2.setGeometry(50,200,200,50)
-		self.btn2.clicked.connect(lambda : self.pdf_splitter(self.getSelectedItem(),plst,self.msg()))
+		self.btn2.clicked.connect(lambda : self.pdf_splitter(self.getSelectedItem(),plst))
 		self.setWindowTitle('PdfTool')
 		self.setStyleSheet('''
 				QPushButton {
@@ -129,7 +129,7 @@ class PdfTool(QMainWindow):
 			print(e)
 			self.notif.setText(e)
  
-	def pdf_splitter(self,path,plst,direc):
+	def pdf_splitter(self,path,plst):
 		plst = self.getPages()
 		try:
 			fname = os.path.splitext(os.path.basename(path))[0]
@@ -142,7 +142,7 @@ class PdfTool(QMainWindow):
 				for page in range(plst[0]-1,plst[1]):
 					pdf_writer.addPage(pdf.getPage(page))
 		 
-				output_filename = direc #'{}_page_{}.pdf'.format(fname, str(plst[0])+'_'+str(plst[1]))
+				output_filename = '{}_page_{}.pdf'.format(fname, str(plst[0])+'_'+str(plst[1]))
 	 
 				with open(output_filename, 'wb') as out:
 					pdf_writer.write(out)
@@ -152,7 +152,7 @@ class PdfTool(QMainWindow):
 				if plst[0]>0:
 					pdf_writer = PdfFileWriter()
 					pdf_writer.addPage(pdf.getPage(plst[0]-1))
-					output_filename = direc #'{}_page.pdf'.format(fname)
+					output_filename = '{}_page.pdf'.format(fname)
 					with open(output_filename, 'wb') as out:
 						pdf_writer.write(out)
 				else:
@@ -161,7 +161,7 @@ class PdfTool(QMainWindow):
 						pdf_writer.addPage(pdf.getPage(page))
 					for page in range(-plst[0],totalP):
 						pdf_writer.addPage(pdf.getPage(page))
-					output_filename = direc #'{}_page.pdf'.format(fname)
+					output_filename = '{}_page.pdf'.format(fname)
 					with open(output_filename,'wb') as out:
 						pdf_writer.write(out)
 
@@ -171,7 +171,7 @@ class PdfTool(QMainWindow):
 					pdf_writer.addPage(pdf.getPage(page))
 				for page in range(plst[0],totalP):
 					pdf_writer.addPage(pdf.getPage(page))
-				output_filename = direc #'{}_page_{}.pdf'.format(fname, str(plst[0])+'_'+str(plst[1]))
+				output_filename = '{}_page_{}.pdf'.format(fname, str(plst[0])+'_'+str(plst[1]))
 				with open(output_filename, 'wb') as out:
 					pdf_writer.write(out)
 				print('Created: {}'.format(output_filename))
