@@ -16,3 +16,5 @@ When you type end page : start page, you can delete these pages from your pdf fi
 
 
 You can also type the single page number to extract this one page out, or minus(-)infront of sigle page number to delete this page.
+
+The delete button is only for deleting the file you dropped in the working area. Click on one file and hit delete for deleting that file. Hitting delete without choosing any file will delete all files in working area.
